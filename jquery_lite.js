@@ -68,6 +68,56 @@
 	  return output;
 	};
 	
+	$l.ajax = function(options) {
+	  let request = new XMLHttpRequest();
+	  let defaults = {
+	    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	    method: "GET",
+	    url: "",
+	    success: function() {},
+	    error: function() {},
+	    data: {},
+	  };
+	
+	  options = $l.extend(defaults, options);
+	  if (options.method.toUpperCase() === "GET"){
+	    options.url += "?" + makeQueryString(options.data);
+	  }
+	
+	  request.open(options.method, options.url, true);
+	  request.onload = e => {
+	    //NB: Triggered when request.readyState === XMLHttpRequest.DONE ===  4
+	    if (request.status === 200) {
+	      options.success(request.response);
+	    } else {
+	      options.error(request.response);
+	    }
+	  };
+	
+	  request.send(JSON.stringify(options.data));
+	};
+	
+	$l.extend = function(target, ...otherElements) {
+	  otherElements.forEach(function(ele) {
+	    for (let key in ele) {
+	      target[key] = ele[key];
+	    }
+	  });
+	  return target;
+	};
+	
+	
+	//make a query string
+	function makeQueryString(pojo) {
+	  let result = "";
+	  for (let key in pojo) {
+	    if (pojo.hasOwnProperty(key)) {
+	      result += key + "=" + pojo[key] + "&";
+	    }
+	  }
+	  return result.substring(0, result.length - 1);
+	}
+	
 	//helper method which uses the DOM API to select html elements
 	function getNodesFromDom(selector) {
 	  const elementList = document.querySelectorAll(selector);
@@ -210,7 +260,28 @@
 	  }
 	};
 	
+	//on method for DOMNodeCollection
+	DOMNodeCollection.prototype.on = function(type, fn) {
+	  for (let i = 0; i < this.nodes.length; i++){
+	    this.nodes[i].addEventListener(type, fn);
+	    let typeKey = `my-${type}`;
+	    if (typeof this.nodes[i][typeKey] === "undefined") {
+	      this.nodes[i][typeKey] = [];
+	    }
+	    this.nodes[i].push(fn);
+	  }
+	};
 	
+	//off method for DOMNodeCollection
+	DOMNodeCollection.prototype.off = function(type) {
+	  for (let i = 0; i < this.nodes.length; i++) {
+	    let typeKey = `my-${type}`;
+	    this.nodes[i][typeKey].forEach(function(fn) {
+	      this.nodes[i].removeEventListener(type, fn);
+	    }.bind(this));
+	    this.nodes[i][typeKey] = [];
+	  }
+	};
 	
 	module.exports = DOMNodeCollection;
 
