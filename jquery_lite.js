@@ -210,7 +210,7 @@
 	  return new DOMNodeCollection(ancestors);
 	};
 	
-	//finds all nodes matching the selector passed in at are
+	//finds all nodes matching the selector passed in that are
 	//descendants of the nodes
 	DOMNodeCollection.prototype.find = function(selector) {
 	  var result = [];
