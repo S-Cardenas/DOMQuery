@@ -138,6 +138,80 @@
 	  }
 	};
 	
+	//returns DOMNodeCollection of ALL children of all nodes in the array
+	DOMNodeCollection.prototype.children = function() {
+	  let descendants = [];
+	  for (let i = 0; i < this.nodes.length; i++) {
+	    let currentChildren = this.nodes[i].children;
+	    for (let j = 0; j < currentChildren.length; j++) {
+	      descendants.push(currentChildren[j]);
+	    }
+	  }
+	  return new DOMNodeCollection(descendants);
+	};
+	
+	//return DOMNodeColection of the parent(s) of each of the nodes
+	DOMNodeCollection.prototype.parent = function() {
+	  let ancestors = [];
+	  for (let i = 0; i < this.nodes.length; i++) {
+	    let currentAncestors = this.nodes[i].parentElement;
+	    ancestors.concat(Array.from(currentAncestors));
+	  }
+	  return new DOMNodeCollection(ancestors);
+	};
+	
+	//finds all nodes matching the selector passed in at are
+	//descendants of the nodes
+	DOMNodeCollection.prototype.find = function(selector) {
+	  var result = [];
+	  for (let i = 0; i < this.nodes.length; i++) {
+	    let matches = this.nodes[i].querySelectorAll(selector);
+	    result.concat(Array.from(matches));
+	  }
+	  return new DOMNodeCollection(result);
+	};
+	
+	//removes the html of all the nodes in the array from the DOM
+	DOMNodeCollection.prototype.remove = function() {
+	  for (let i = 0; i < this.nodes.length; i++) {
+	    this.nodes[i].remove();
+	  }
+	  this.nodes = [];
+	};
+	
+	//get the value of an attribute for the first element in the set of matched
+	//elements or set one of more attributes for every matched element
+	DOMNodeCollection.prototype.attr = function(attributeName, value) {
+	  if (!value) {
+	    return this.nodes[0].getAttribute(attributeName);
+	  }
+	  else {
+	    for (let i = 0; i < this.nodes.length; i++){
+	      this.nodes[i].setAttribute(attributeName, value);
+	    }
+	  }
+	};
+	
+	//adds the specified class(es) to each element in set of matched elements
+	DOMNodeCollection.prototype.addClass = function(className) {
+	  if (typeof className === 'string') {
+	    for (let i = 0; i < this.nodes.length; i++){
+	      this.nodes[i].classList.add(className);
+	    }
+	  }
+	};
+	
+	//removes the specified class from each element in set of matched elements
+	DOMNodeCollection.prototype.removeClass = function(className) {
+	  if (typeof className === 'string') {
+	    for (let i = 0; i < this.nodes.length; i++){
+	      this.nodes[i].classList.remove(className);
+	    }
+	  }
+	};
+	
+	
+	
 	module.exports = DOMNodeCollection;
 
 
