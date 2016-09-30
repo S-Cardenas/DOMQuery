@@ -3,7 +3,7 @@ Lightweight JavaScript library utilizing native Web API for efficient DOM intera
 Inspired by jQuery.
 
 ##**Instructions**
-To use the libary include "DOMQuery.js" in a script tag in your html file.
+To use the libary include "./lib/DOMQuery.js" in a script tag in your html file.
 
 ##**Public API**
 * $l(selector) - find all the html elements that match the selector and create new DOMNodeCollection

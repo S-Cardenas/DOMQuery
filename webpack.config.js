@@ -1,7 +1,7 @@
 module.exports = {
   entry: "./lib/main.js",
   output: {
-    path: __dirname,
+    path: "./lib/",
     filename: "DOMQuery.js"
   },
   devtool: "source-map",
